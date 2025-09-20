@@ -1,89 +1,67 @@
-# Yocto Project: Minimal Linux Image for Raspberry Pi 4B
+# meta-pi-rtos-gateway
 
-This repository contains all configuration, scripts, and example meta-layers needed to build, flash, and boot a minimal Embedded Linux image for the Raspberry Pi 4B using the Yocto Project.
+A Yocto layer for building **Pi-RTOS Edge Gateway** images on **Raspberry Pi 4**.
 
-## Repository Structure
+## Overview
 
-- `meta-test/` &nbsp; — Custom Yocto meta-layer for additional recipes or configuration.
-- `raspi4Build/`
-    - `conf/` — Contains `bblayers.conf` and `local.conf` tailored for Raspberry Pi 4B.
-    - (Plus scripts for automated build/flash, if included.)
-- `README.md` — Project documentation and usage instructions.
+This layer provides recipes and configurations to build an embedded Linux gateway with RTOS-inspired tasking and sensor data streaming support.
 
-## Features
+## Dependencies
 
-- Built, configured, and flashed a minimal Linux image for Raspberry Pi 4B.
-- Custom meta-layer example (`meta-test`).
-- Automated the build and flashing process with shell scripts for reproducibility.
-- Image booted and validated via UART serial console.
-- Step-by-step documentation to help you reproduce this setup.
-
-## Requirements
-
-- Host machine: Ubuntu 20.04+ (or similar Linux distro)
-- Basic Yocto dependencies: `git`, `repo`, Python3, `gcc`, `g++`, `make`, etc.
-- Raspberry Pi 4B with microSD card
-- UART-to-USB adapter/cable for serial debugging (optional but recommended)
+* **poky** (OpenEmbedded-Core)
+* **meta-raspberrypi**
+* **meta-openembedded/meta-oe**
+* **meta-openembedded/meta-python**
+* **meta-openembedded/meta-networking**
 
 ## Quick Start
 
-1. **Clone the repository:**
-    ```
-    git clone https://github.com/yourusername/yocto-rpi4b-core-image-minimal.git
-    cd yocto-rpi4b-core-image-minimal
-    ```
+### 1. Fetch Sources
 
-2. **Set up your build environment:**
-    ```
-    cd raspi4Build
-    # Source the Yocto environment if needed
-    source oe-init-build-env
-    ```
+```bash
+git clone -b kirkstone git://git.yoctoproject.org/poky
+git clone -b kirkstone https://github.com/agherzan/meta-raspberrypi
+git clone -b kirkstone https://github.com/openembedded/meta-openembedded
+git clone https://github.com/shrihari099/meta-pi-rtos-gateway
+```
 
-3. **Configure layers:**
-    - Make sure `meta-test` is included in your `bblayers.conf`.
+### 2. Initialize Build Environment
 
-4. **Build the minimal core image:**
-    ```
-    # Run the provided build script, or use BitBake directly
-    ./build.sh
-    # or, manually
-    bitbake core-image-minimal
-    ```
+```bash
+cd poky
+source oe-init-build-env ../build
+```
 
-5. **Flash the image:**
-    ```
-    # Example flash script provided
-    ./flash.sh
-    ```
+### 3. Configure Layers (`conf/bblayers.conf`)
+refer `build_conf` folder
 
-6. **Boot and test via UART:**
-    - Connect using your favorite serial terminal (e.g., `minicom` or `screen`)
-    - Default baud rate: 115200
+### 4. Set Build Options (`conf/local.conf`)
+refer `build_conf` folder
 
-## Directory Details
+### 5. Build Image
 
-| Directory/File | Purpose                                  |
-|----------------|------------------------------------------|
-| `meta-test/`   | Example meta-layer for Yocto             |
-| `raspi4Build/` | Build directory with configuration files |
-| `README.md`    | Project documentation (this file)        |
+```bash
+bitbake pi-rtos-gateway-image
+```
 
-## Customization
+Image output:
 
-- Edit `conf/local.conf` and `conf/bblayers.conf` in `raspi4Build/` as needed for your setup.
-- Place additional recipes/layers in `meta-test/`.
+tmp/deploy/images/raspberrypi4-64/pi-rtos-gateway-image-raspberrypi4-64.wic.bz2
 
-## License
+## Layer Structure
 
-[MIT License](LICENSE)  
-(C) 2025 Shrihari Vaidya
+meta-pi-rtos-gateway/
+├── conf/layer.conf
+├── recipes-core/images/pi-rtos-gateway-image.bb
+└── recipes-example/example/example_0.1.bb
+
+## Compatibility
+
+* **Yocto Release**: Kirkstone (LTS)
+* **Poky**: 4.0.x
+* **Target**: Raspberry Pi 4 (64-bit)
 
 ## Author
 
-- Shrihari (`shriharivaidya099gmail.com`)
-
----
-
-*For questions and troubleshooting, open an issue or create a pull request!*
-
+**Shrihari Vaidya**
+📧 [shriharivaidya099@gmail.com](mailto:shriharivaidya099@gmail.com)
